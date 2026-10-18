@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zona Waktu Gamma</title>
+    <title>Zona Waktu Gamma - Atheria Universe</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap');
 
@@ -14,7 +14,7 @@
         }
 
         body {
-            background-color: #5C9BCB; /* Warna biru sesuai gambar */
+            background-color: #5C9BCB;
             font-family: 'Montserrat', sans-serif;
             color: #FFFFFF;
             min-height: 100vh;
@@ -27,7 +27,7 @@
         .container {
             width: 100%;
             max-width: 500px;
-            padding: 40px 30px;
+            padding: 30px 30px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -36,23 +36,51 @@
 
         /* --- Bagian Header --- */
         .header {
-            text-align: left;
-            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 10px;
         }
 
-        .header h1 {
-            font-size: 2rem;
+        .header-text h1 {
+            font-size: 1.8rem;
             font-weight: 800;
             letter-spacing: 0.5px;
             margin-bottom: 2px;
             line-height: 1.1;
         }
 
-        .header h2 {
-            font-size: 1.2rem;
+        .header-text h2 {
+            font-size: 1rem;
             font-weight: 400;
             letter-spacing: 0.5px;
             opacity: 0.95;
+        }
+
+        /* Dropdown Pemilih Negara */
+        .country-selector {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 10px auto;
+            padding-right: 30px;
+        }
+
+        .country-selector option {
+            background-color: #4a81ab;
+            color: #fff;
         }
 
         /* --- Bagian Tengah (Jam & Menit) --- */
@@ -61,8 +89,8 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         .time-block {
@@ -72,7 +100,6 @@
             position: relative;
         }
 
-        /* Label di kiri (JAM / HOURS) */
         .label-group {
             width: 90px;
             display: flex;
@@ -96,9 +123,8 @@
             letter-spacing: 0.5px;
         }
 
-        /* Angka besar */
         .number {
-            font-size: 12rem;
+            font-size: 11rem;
             font-weight: 800;
             line-height: 0.8;
             letter-spacing: -2px;
@@ -107,15 +133,14 @@
         }
 
         .number.minute {
-            color: #FFE07D; /* Warna kuning sesuai gambar */
+            color: #FFE07D;
         }
 
-        /* Garis pemisah */
         .divider {
             width: 100%;
             height: 2px;
             background-color: #FFFFFF;
-            margin: 10px 0 25px 0;
+            margin: 10px 0 20px 0;
             opacity: 0.9;
         }
 
@@ -123,12 +148,12 @@
         .date-section {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .date-box {
             border: 2px solid #FFFFFF;
-            padding: 12px 20px;
+            padding: 10px 15px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -136,35 +161,35 @@
 
         .date-box.hari {
             flex: 1;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 700;
         }
 
         .date-box.tanggal {
             flex: 2.5;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 700;
         }
 
-        /* Indikator Status */
+        /* Status Indikator */
         .status-indicator {
             text-align: center;
-            font-size: 0.8rem;
-            margin-top: -10px;
-            margin-bottom: 15px;
+            font-size: 0.75rem;
+            margin-top: 15px;
             opacity: 0.8;
             letter-spacing: 0.1em;
         }
 
         @media (max-width: 420px) {
-            .container { padding: 30px 20px; }
-            .header h1 { font-size: 1.6rem; }
-            .header h2 { font-size: 1rem; }
-            .number { font-size: 9rem; }
-            .label-group { width: 75px; padding-right: 10px; }
-            .label-id { font-size: 1rem; }
-            .label-en { font-size: 0.85rem; }
-            .date-box.hari, .date-box.tanggal { font-size: 1.1rem; padding: 10px; }
+            .container { padding: 20px; }
+            .header-text h1 { font-size: 1.4rem; }
+            .header-text h2 { font-size: 0.8rem; }
+            .country-selector { font-size: 0.7rem; padding: 6px 8px; }
+            .number { font-size: 8rem; }
+            .label-group { width: 70px; padding-right: 10px; }
+            .label-id { font-size: 0.9rem; }
+            .label-en { font-size: 0.75rem; }
+            .date-box.hari, .date-box.tanggal { font-size: 1rem; padding: 8px; }
         }
     </style>
 </head>
@@ -173,8 +198,23 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>ZONA WAKTU GAMMA</h1>
-            <h2>GAMMA TIME ZONE</h2>
+            <div class="header-text">
+                <h1>ZONA WAKTU GAMMA</h1>
+                <h2 id="negara-label">FGN STANDARD (HENSAND)</h2>
+            </div>
+            <!-- Dropdown Pilihan Negara -->
+            <select class="country-selector" id="pilih-negara">
+                <option value="0">Hensand (Amerdom)</option>
+                <option value="1">Aljazar</option>
+                <option value="-1">Lespyia</option>
+                <option value="1">Casenia</option>
+                <option value="-1">Sarta</option>
+                <option value="2">Trebisi</option>
+                <option value="-2">Etinal</option>
+                <option value="2">Mosvoire</option>
+                <option value="3">Tritinia</option>
+                <option value="-1">Abkozia</option>
+            </select>
         </div>
 
         <!-- Waktu -->
@@ -201,7 +241,7 @@
             </div>
         </div>
 
-        <!-- Status (Opsional, bisa dihapus jika tidak ingin ada teks tambahan) -->
+        <!-- Status -->
         <div class="status-indicator" id="status">MENUNGGU WAKTU MULAI...</div>
 
         <!-- Tanggal -->
@@ -218,35 +258,59 @@
             // ============================================
             // KONFIGURASI WAKTU FIKSI
             // ============================================
-            // Waktu fiksi mulai: 1 November 2026
             const START_YEAR = 2026;
-            const START_MONTH = 11;   // November (1-based)
+            const START_MONTH = 11;
             const START_DAY = 1;
             
-            // Waktu mulai (real world): 18 Oktober 2026 jam 12:00 siang
-            // Catatan: Bulan di JS Date dimulai dari 0 (0 = Januari, 9 = Oktober)
+            // Waktu fiksi mulai berdetak (Real World): 18 Oktober 2026, 12:00
             const REAL_START_DATE = new Date(2026, 9, 18, 12, 0, 0); 
             const REAL_START_TIMESTAMP = REAL_START_DATE.getTime();
 
-            // Kecepatan: 8 detik dunia nyata = +1 menit fiksi
+            // Kecepatan: 8 detik nyata = 1 menit fiksi
             const REAL_MS_PER_FICTIONAL_MINUTE = 8000; 
 
-            // Waktu mulai dalam epoch (UTC) untuk kalkulasi tanggal fiksi
-            const startDate = new Date(Date.UTC(START_YEAR, START_MONTH - 1, START_DAY, 0, 0, 0, 0));
-            const startTimestamp = startDate.getTime();
+            // Waktu Dasar (FGN/Hensand) dalam epoch UTC
+            const startDateUTC = new Date(Date.UTC(START_YEAR, START_MONTH - 1, START_DAY, 0, 0, 0, 0));
+            const startTimestampUTC = startDateUTC.getTime();
 
             // ============================================
-            // REFERENSI DOM
+            // REFERENSI DOM & STATE
             // ============================================
             const elJam = document.getElementById('jam');
             const elMenit = document.getElementById('menit');
             const elHari = document.getElementById('hari');
             const elTanggal = document.getElementById('tanggal');
             const elStatus = document.getElementById('status');
+            const elPilihNegara = document.getElementById('pilih-negara');
+            const elNegaraLabel = document.getElementById('negara-label');
+
+            // Offset waktu (dalam jam) per negara relatif terhadap Hensand (FGN)
+            const offsetNegara = {
+                "Hensand (Amerdom)": 0,
+                "Aljazar": 1,        // Asumsi +1 jam
+                "Lespyia": -1,       // Asumsi -1 jam
+                "Casenia": 1,
+                "Sarta": -1,
+                "Trebisi": 2,
+                "Etinal": -2,
+                "Mosvoire": 2,
+                "Tritinia": 3,
+                "Abkozia": -1
+            };
+
+            let currentOffset = 0;
 
             // Array nama hari dan bulan
             const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+            // Event Listener untuk ganti negara
+            elPilihNegara.addEventListener('change', function() {
+                const negaraTerpilih = this.options[this.selectedIndex].text;
+                currentOffset = parseInt(this.value);
+                elNegaraLabel.textContent = negaraTerpilih.toUpperCase();
+                updateClock(); // Update langsung saat diganti
+            });
 
             // ============================================
             // UPDATE TAMPILAN
@@ -254,37 +318,27 @@
             function updateClock() {
                 const nowReal = Date.now();
                 
-                // Jika waktu nyata belum mencapai 18 Oktober 2026 12:00
                 if (nowReal < REAL_START_TIMESTAMP) {
-                    // Tampilkan status menunggu
                     elStatus.textContent = "MENUNGGU 18 OKT 2026 12:00...";
-                    
-                    // Set tampilan ke waktu awal fiksi (1 Nov 2026, 00:00)
                     elJam.textContent = "00";
                     elMenit.textContent = "00";
-                    
-                    // Dapatkan nama hari untuk 1 Nov 2026 (Minggu)
-                    const startDayOfWeek = startDate.getUTCDay();
+                    const startDayOfWeek = startDateUTC.getUTCDay();
                     elHari.textContent = namaHari[startDayOfWeek];
                     elTanggal.textContent = `${START_DAY} ${namaBulan[START_MONTH - 1]} ${START_YEAR}`;
                     return;
                 }
 
-                // Jika sudah melewati waktu mulai (sedang berjalan)
                 elStatus.textContent = "SISTEM BERJALAN (8s = 1m)";
-                elStatus.style.color = "#a0ffb0"; // Warna hijau tanda aktif
+                elStatus.style.color = "#a0ffb0";
 
-                // Hitung selisih waktu sejak 18 Okt 2026 12:00
                 const elapsedRealMs = nowReal - REAL_START_TIMESTAMP;
-
-                // Hitung total menit fiksi yang berlalu
                 const fictionalMinutesTotal = elapsedRealMs / REAL_MS_PER_FICTIONAL_MINUTE;
-
-                // Konversi ke milidetik fiksi
                 const fictionalMs = fictionalMinutesTotal * 60000;
-                const fictionalDate = new Date(startTimestamp + fictionalMs);
+                
+                // Tambahkan offset negara (dalam milidetik) ke waktu fiksi
+                const offsetMs = currentOffset * 60 * 60 * 1000;
+                const fictionalDate = new Date(startTimestampUTC + fictionalMs + offsetMs);
 
-                // Ekstrak komponen waktu (UTC)
                 const day = fictionalDate.getUTCDate();
                 const month = fictionalDate.getUTCMonth();
                 const year = fictionalDate.getUTCFullYear();
@@ -292,7 +346,6 @@
                 const minute = fictionalDate.getUTCMinutes();
                 const dayOfWeek = fictionalDate.getUTCDay();
 
-                // Update DOM
                 elJam.textContent = String(hour).padStart(2, '0');
                 elMenit.textContent = String(minute).padStart(2, '0');
                 
@@ -300,17 +353,11 @@
                 elTanggal.textContent = `${day} ${namaBulan[month]} ${year}`;
             }
 
-            // Jalankan pertama kali
             updateClock();
-
-            // Update setiap 100ms
             setInterval(updateClock, 100);
 
-            // Pastikan sinkron saat tab kembali dibuka
             document.addEventListener('visibilitychange', function() {
-                if (!document.hidden) {
-                    updateClock();
-                }
+                if (!document.hidden) updateClock();
             });
 
         })();
