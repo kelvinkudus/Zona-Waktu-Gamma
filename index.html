@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zona Waktu Gamma</title>
     <style>
-        /* Menggunakan font sans-serif modern yang mirip dengan gambar */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap');
 
         * {
@@ -104,6 +103,7 @@
             line-height: 0.8;
             letter-spacing: -2px;
             color: #FFFFFF;
+            font-variant-numeric: tabular-nums;
         }
 
         .number.minute {
@@ -146,11 +146,18 @@
             font-weight: 700;
         }
 
-        /* Responsif untuk layar lebih kecil */
+        /* Indikator Status */
+        .status-indicator {
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+            letter-spacing: 0.1em;
+        }
+
         @media (max-width: 420px) {
-            .container {
-                padding: 30px 20px;
-            }
+            .container { padding: 30px 20px; }
             .header h1 { font-size: 1.6rem; }
             .header h2 { font-size: 1rem; }
             .number { font-size: 9rem; }
@@ -178,7 +185,7 @@
                     <span class="label-id">JAM</span>
                     <span class="label-en">HOURS</span>
                 </div>
-                <div class="number" id="jam">06</div>
+                <div class="number" id="jam">00</div>
             </div>
 
             <!-- Garis Pemisah -->
@@ -190,13 +197,16 @@
                     <span class="label-id">MENIT</span>
                     <span class="label-en">MINUTE</span>
                 </div>
-                <div class="number minute" id="menit">25</div>
+                <div class="number minute" id="menit">00</div>
             </div>
         </div>
 
+        <!-- Status (Opsional, bisa dihapus jika tidak ingin ada teks tambahan) -->
+        <div class="status-indicator" id="status">MENUNGGU WAKTU MULAI...</div>
+
         <!-- Tanggal -->
         <div class="date-section">
-            <div class="date-box hari" id="hari">Senin</div>
+            <div class="date-box hari" id="hari">Minggu</div>
             <div class="date-box tanggal" id="tanggal">1 November 2026</div>
         </div>
     </div>
@@ -208,18 +218,21 @@
             // ============================================
             // KONFIGURASI WAKTU FIKSI
             // ============================================
-            // Mulai: 1 November 2026, jam 00:00
+            // Waktu fiksi mulai: 1 November 2026
             const START_YEAR = 2026;
             const START_MONTH = 11;   // November (1-based)
             const START_DAY = 1;
-            const START_HOUR = 0;
-            const START_MINUTE = 0;
+            
+            // Waktu mulai (real world): 18 Oktober 2026 jam 12:00 siang
+            // Catatan: Bulan di JS Date dimulai dari 0 (0 = Januari, 9 = Oktober)
+            const REAL_START_DATE = new Date(2026, 9, 18, 12, 0, 0); 
+            const REAL_START_TIMESTAMP = REAL_START_DATE.getTime();
 
             // Kecepatan: 8 detik dunia nyata = +1 menit fiksi
             const REAL_MS_PER_FICTIONAL_MINUTE = 8000; 
 
-            // Waktu mulai dalam epoch (UTC)
-            const startDate = new Date(Date.UTC(START_YEAR, START_MONTH - 1, START_DAY, START_HOUR, START_MINUTE, 0, 0));
+            // Waktu mulai dalam epoch (UTC) untuk kalkulasi tanggal fiksi
+            const startDate = new Date(Date.UTC(START_YEAR, START_MONTH - 1, START_DAY, 0, 0, 0, 0));
             const startTimestamp = startDate.getTime();
 
             // ============================================
@@ -229,6 +242,7 @@
             const elMenit = document.getElementById('menit');
             const elHari = document.getElementById('hari');
             const elTanggal = document.getElementById('tanggal');
+            const elStatus = document.getElementById('status');
 
             // Array nama hari dan bulan
             const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -239,16 +253,38 @@
             // ============================================
             function updateClock() {
                 const nowReal = Date.now();
-                const elapsedRealMs = nowReal - startTimestamp;
+                
+                // Jika waktu nyata belum mencapai 18 Oktober 2026 12:00
+                if (nowReal < REAL_START_TIMESTAMP) {
+                    // Tampilkan status menunggu
+                    elStatus.textContent = "MENUNGGU 18 OKT 2026 12:00...";
+                    
+                    // Set tampilan ke waktu awal fiksi (1 Nov 2026, 00:00)
+                    elJam.textContent = "00";
+                    elMenit.textContent = "00";
+                    
+                    // Dapatkan nama hari untuk 1 Nov 2026 (Minggu)
+                    const startDayOfWeek = startDate.getUTCDay();
+                    elHari.textContent = namaHari[startDayOfWeek];
+                    elTanggal.textContent = `${START_DAY} ${namaBulan[START_MONTH - 1]} ${START_YEAR}`;
+                    return;
+                }
+
+                // Jika sudah melewati waktu mulai (sedang berjalan)
+                elStatus.textContent = "SISTEM BERJALAN (8s = 1m)";
+                elStatus.style.color = "#a0ffb0"; // Warna hijau tanda aktif
+
+                // Hitung selisih waktu sejak 18 Okt 2026 12:00
+                const elapsedRealMs = nowReal - REAL_START_TIMESTAMP;
 
                 // Hitung total menit fiksi yang berlalu
                 const fictionalMinutesTotal = elapsedRealMs / REAL_MS_PER_FICTIONAL_MINUTE;
 
-                // Konversi ke milidetik fiksi dan tambahkan ke waktu mulai
+                // Konversi ke milidetik fiksi
                 const fictionalMs = fictionalMinutesTotal * 60000;
                 const fictionalDate = new Date(startTimestamp + fictionalMs);
 
-                // Ekstrak komponen waktu (UTC agar tidak terpengaruh timezone device)
+                // Ekstrak komponen waktu (UTC)
                 const day = fictionalDate.getUTCDate();
                 const month = fictionalDate.getUTCMonth();
                 const year = fictionalDate.getUTCFullYear();
@@ -267,7 +303,7 @@
             // Jalankan pertama kali
             updateClock();
 
-            // Update setiap 100ms agar pergerakan menit terasa halus
+            // Update setiap 100ms
             setInterval(updateClock, 100);
 
             // Pastikan sinkron saat tab kembali dibuka
