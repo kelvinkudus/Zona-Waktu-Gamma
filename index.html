@@ -40,6 +40,8 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-top: 10px;
+            position: relative;
+            z-index: 100; /* Pastikan dropdown di atas elemen lain */
         }
 
         .header-text h1 {
@@ -57,31 +59,96 @@
             opacity: 0.95;
         }
 
-        /* Dropdown Pemilih Negara */
-        .country-selector {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 600;
-            outline: none;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 10px top 50%;
-            background-size: 10px auto;
-            padding-right: 30px;
-            max-width: 150px;
+        /* --- CUSTOM DROPDOWN --- */
+        .custom-select-wrapper {
+            position: relative;
+            user-select: none;
+            width: 140px;
         }
 
-        .country-selector option {
-            background-color: #4a81ab;
-            color: #fff;
+        .custom-select-trigger {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .custom-select-trigger:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Ikon panah */
+        .arrow {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #FFFFFF;
+            transition: transform 0.3s ease;
+        }
+
+        .custom-select-wrapper.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Menu Options */
+        .custom-options {
+            position: absolute;
+            top: 110%;
+            right: 0;
+            width: 180px;
+            background: rgba(65, 115, 155, 0.95); /* Warna biru gelap transparan */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        /* Scrollbar kustom untuk dropdown */
+        .custom-options::-webkit-scrollbar { width: 6px; }
+        .custom-options::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+
+        .custom-select-wrapper.open .custom-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .custom-option {
+            padding: 12px 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-option:last-child {
+            border-bottom: none;
+        }
+
+        .custom-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .custom-option.selected {
+            background: #FFE07D; /* Warna kuning penanda terpilih */
+            color: #333;
+            font-weight: 700;
         }
 
         /* --- Bagian Tengah (Jam & Menit) --- */
@@ -92,6 +159,8 @@
             justify-content: center;
             margin-top: 10px;
             margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
         }
 
         .time-block {
@@ -150,6 +219,8 @@
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
         }
 
         .date-box {
@@ -172,25 +243,26 @@
             font-weight: 700;
         }
 
-        /* Status Indikator */
         .status-indicator {
             text-align: center;
             font-size: 0.75rem;
             margin-top: 15px;
             opacity: 0.8;
             letter-spacing: 0.1em;
+            position: relative;
+            z-index: 1;
         }
 
         @media (max-width: 420px) {
             .container { padding: 20px; }
             .header-text h1 { font-size: 1.4rem; }
             .header-text h2 { font-size: 0.8rem; }
-            .country-selector { font-size: 0.7rem; padding: 6px 8px; max-width: 120px; }
             .number { font-size: 8rem; }
             .label-group { width: 70px; padding-right: 10px; }
             .label-id { font-size: 0.9rem; }
             .label-en { font-size: 0.75rem; }
             .date-box.hari, .date-box.tanggal { font-size: 1rem; padding: 8px; }
+            .custom-select-wrapper { width: 120px; }
         }
     </style>
 </head>
@@ -203,21 +275,28 @@
                 <h1>ZONA WAKTU GAMMA</h1>
                 <h2 id="negara-label">CASENIA</h2>
             </div>
-            <!-- Dropdown Pilihan Negara -->
-            <select class="country-selector" id="pilih-negara">
-                <option value="2">Hensand</option>
-                <option value="1">Aljazar</option>
-                <option value="1">Lespyia</option>
-                <option value="1">Abkozia</option>
-                <option value="1">Sarta (Daratan)</option>
-                <option value="-1">Sarta (Semenanjung)</option>
-                <option value="-2">Etinal</option>
-                <option value="2">Trebisi</option>
-                <option value="1">Tritinia</option>
-                <option value="0" selected>Casenia</option>
-                <option value="-3">Big Land</option>
-                <option value="0">Mosvoire</option>
-            </select>
+            
+            <!-- CUSTOM DROPDOWN -->
+            <div class="custom-select-wrapper" id="dropdown-wrapper">
+                <div class="custom-select-trigger" id="dropdown-trigger">
+                    <span id="selected-text">Casenia</span>
+                    <div class="arrow"></div>
+                </div>
+                <div class="custom-options" id="dropdown-options">
+                    <div class="custom-option" data-value="2">Hensand</div>
+                    <div class="custom-option" data-value="1">Aljazar</div>
+                    <div class="custom-option" data-value="1">Lespyia</div>
+                    <div class="custom-option" data-value="1">Abkozia</div>
+                    <div class="custom-option" data-value="1">Sarta (Daratan)</div>
+                    <div class="custom-option" data-value="-1">Sarta (Semenanjung)</div>
+                    <div class="custom-option" data-value="-2">Etinal</div>
+                    <div class="custom-option" data-value="2">Trebisi</div>
+                    <div class="custom-option" data-value="1">Tritinia</div>
+                    <div class="custom-option selected" data-value="0">Casenia</div>
+                    <div class="custom-option" data-value="-3">Big Land</div>
+                    <div class="custom-option" data-value="0">Mosvoire</div>
+                </div>
+            </div>
         </div>
 
         <!-- Waktu -->
@@ -265,14 +344,11 @@
             const START_MONTH = 11;
             const START_DAY = 1;
             
-            // Waktu mulai berdetak (Real World): 18 Oktober 2026, 12:00
             const REAL_START_DATE = new Date(2026, 9, 18, 12, 0, 0); 
             const REAL_START_TIMESTAMP = REAL_START_DATE.getTime();
 
-            // Kecepatan: 8 detik nyata = 1 menit fiksi
             const REAL_MS_PER_FICTIONAL_MINUTE = 8000; 
 
-            // Waktu Dasar patokan (Casenia/Mosvoire = offset 0) dalam epoch UTC
             const startDateUTC = new Date(Date.UTC(START_YEAR, START_MONTH - 1, START_DAY, 0, 0, 0, 0));
             const startTimestampUTC = startDateUTC.getTime();
 
@@ -284,25 +360,64 @@
             const elHari = document.getElementById('hari');
             const elTanggal = document.getElementById('tanggal');
             const elStatus = document.getElementById('status');
-            const elPilihNegara = document.getElementById('pilih-negara');
             const elNegaraLabel = document.getElementById('negara-label');
+
+            // Custom Dropdown Elements
+            const dropdownWrapper = document.getElementById('dropdown-wrapper');
+            const dropdownTrigger = document.getElementById('dropdown-trigger');
+            const dropdownOptions = document.getElementById('dropdown-options');
+            const selectedText = document.getElementById('selected-text');
 
             let currentOffset = 0;
 
-            // Array nama hari dan bulan
             const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-            // Event Listener saat negara diganti
-            elPilihNegara.addEventListener('change', function() {
-                const negaraTerpilih = this.options[this.selectedIndex].text;
-                currentOffset = parseInt(this.value);
-                elNegaraLabel.textContent = negaraTerpilih.toUpperCase();
-                updateClock(); // Paksa update seketika
+            // ============================================
+            // LOGIKA CUSTOM DROPDOWN
+            // ============================================
+            // Buka/tutup menu
+            dropdownTrigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdownWrapper.classList.toggle('open');
             });
 
+            // Pilih opsi
+            const options = dropdownOptions.querySelectorAll('.custom-option');
+            options.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    // Hapus class selected dari semua
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Tambah class selected ke yang diklik
+                    this.classList.add('selected');
+                    
+                    // Update nilai teks dan offset
+                    const text = this.innerText;
+                    const val = parseInt(this.getAttribute('data-value'));
+                    
+                    selectedText.innerText = text;
+                    elNegaraLabel.innerText = text.toUpperCase();
+                    currentOffset = val;
+                    
+                    // Tutup menu
+                    dropdownWrapper.classList.remove('open');
+                    
+                    // Paksa jam update seketika
+                    updateClock();
+                });
+            });
+
+            // Tutup dropdown jika klik di luar area
+            document.addEventListener('click', function() {
+                dropdownWrapper.classList.remove('open');
+            });
+
+
             // ============================================
-            // UPDATE TAMPILAN
+            // UPDATE TAMPILAN WAKTU
             // ============================================
             function updateClock() {
                 const nowReal = Date.now();
@@ -313,7 +428,6 @@
                     elJam.textContent = "00";
                     elMenit.textContent = "00";
                     
-                    // Kalkulasi tanggal awal fiksi dengan offset yang dipilih
                     const offsetMs = currentOffset * 60 * 60 * 1000;
                     const startDisplay = new Date(startTimestampUTC + offsetMs);
                     
@@ -326,16 +440,13 @@
                 elStatus.textContent = "SISTEM BERJALAN (8s = 1m)";
                 elStatus.style.color = "#a0ffb0";
 
-                // Hitung waktu fiksi berjalan
                 const elapsedRealMs = nowReal - REAL_START_TIMESTAMP;
                 const fictionalMinutesTotal = elapsedRealMs / REAL_MS_PER_FICTIONAL_MINUTE;
                 const fictionalMs = fictionalMinutesTotal * 60000;
                 
-                // Terapkan Offset Waktu Negara
                 const offsetMs = currentOffset * 60 * 60 * 1000;
                 const fictionalDate = new Date(startTimestampUTC + fictionalMs + offsetMs);
 
-                // Ekstrak data
                 const day = fictionalDate.getUTCDate();
                 const month = fictionalDate.getUTCMonth();
                 const year = fictionalDate.getUTCFullYear();
@@ -343,7 +454,6 @@
                 const minute = fictionalDate.getUTCMinutes();
                 const dayOfWeek = fictionalDate.getUTCDay();
 
-                // Tampilkan ke layar
                 elJam.textContent = String(hour).padStart(2, '0');
                 elMenit.textContent = String(minute).padStart(2, '0');
                 
@@ -351,7 +461,6 @@
                 elTanggal.textContent = `${day} ${namaBulan[month]} ${year}`;
             }
 
-            // Inisialisasi awal
             updateClock();
             setInterval(updateClock, 100);
 
