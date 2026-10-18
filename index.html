@@ -166,36 +166,27 @@
 
         /* Style untuk Angka */
         .number-container {
-            overflow: hidden; /* Menyembunyikan teks yang keluar jalur saat animasi */
-            height: 9rem; /* Dikunci tingginya agar layout tidak goyang */
+            overflow: hidden;
+            height: 9rem;
             display: flex;
             align-items: center;
         }
 
         .number {
-            font-family: 'Montserrat', sans-serif; /* Font dikembalikan ke aslinya */
+            font-family: 'Montserrat', sans-serif;
             font-size: 11rem;
-            font-weight: 800; /* Ketebalan sesuai desain awal */
+            font-weight: 800;
             line-height: 0.9;
             letter-spacing: -2px;
             color: #FFFFFF;
             font-variant-numeric: tabular-nums;
-            
-            /* Transisi Animasi */
             transition: transform 0.3s ease-out, opacity 0.3s ease-out;
         }
 
         .number.minute { color: #FFE07D; }
 
-        /* Class untuk memicu animasi */
-        .animate-out {
-            transform: translateY(-20px);
-            opacity: 0;
-        }
-        .animate-in {
-            transform: translateY(20px);
-            opacity: 0;
-        }
+        .animate-out { transform: translateY(-20px); opacity: 0; }
+        .animate-in { transform: translateY(20px); opacity: 0; }
 
         .divider {
             width: 100%;
@@ -244,8 +235,6 @@
             .label-en { font-size: 0.75rem; }
             .date-box.hari, .date-box.tanggal { font-size: 1rem; padding: 8px; }
             .custom-select-wrapper { width: 130px; }
-            
-            /* Responsif untuk angka */
             .number-container { height: 6rem; }
             .number { font-size: 8rem; }
         }
@@ -258,35 +247,41 @@
         <div class="header">
             <div class="header-text">
                 <h1>ZONA WAKTU GAMMA</h1>
-                <h2 id="negara-label">TRITINIA</h2>
+                <h2 id="negara-label">ABKOZIA</h2> <!-- Default diubah ke Abkozia (+0) -->
             </div>
             
             <!-- CUSTOM DROPDOWN -->
             <div class="custom-select-wrapper" id="dropdown-wrapper">
                 <div class="custom-select-trigger" id="dropdown-trigger">
-                    <span id="selected-text">Tritinia</span>
+                    <span id="selected-text">Abkozia</span>
                     <div class="arrow"></div>
                 </div>
                 <div class="custom-options" id="dropdown-options">
+                    <!-- Urut dari paling lambat ke paling cepat -->
                     <div class="custom-option" data-value="-2">Big Land</div>
                     <div class="custom-option" data-value="-1">Sarta (Ekslave)</div>
                     <div class="custom-option" data-value="-1">Etinal</div>
-                    <div class="custom-option selected" data-value="0">Tritinia</div>
-                    <div class="custom-option" data-value="0">Abkozia</div>
+                    
+                    <!-- Baseline +0 -->
+                    <div class="custom-option selected" data-value="0">Abkozia</div>
                     <div class="custom-option" data-value="0">Sarta (Daratan)</div>
+                    
+                    <!-- +1 -->
                     <div class="custom-option" data-value="1">Hensand</div>
                     <div class="custom-option" data-value="1">Mosvoire</div>
                     <div class="custom-option" data-value="1">Casenia</div>
                     <div class="custom-option" data-value="1">Lespyia</div>
+                    
+                    <!-- +2 -->
                     <div class="custom-option" data-value="2">Aljazar</div>
                     <div class="custom-option" data-value="2">Trebisi</div>
+                    <div class="custom-option" data-value="2">Tritinia</div> <!-- Tritinia pindah ke sini -->
                 </div>
             </div>
         </div>
 
         <!-- Waktu -->
         <div class="time-section">
-            <!-- Blok Jam -->
             <div class="time-block">
                 <div class="label-group">
                     <span class="label-id">JAM</span>
@@ -297,10 +292,8 @@
                 </div>
             </div>
 
-            <!-- Garis Pemisah -->
             <div class="divider"></div>
 
-            <!-- Blok Menit -->
             <div class="time-block">
                 <div class="label-group">
                     <span class="label-id">MENIT</span>
@@ -326,9 +319,6 @@
         (function() {
             'use strict';
 
-            // ============================================
-            // KONFIGURASI
-            // ============================================
             const START_YEAR = 2026;
             const START_MONTH = 11;
             const START_DAY = 1;
@@ -341,9 +331,6 @@
             const startDateUTC = new Date(Date.UTC(START_YEAR, START_MONTH - 1, START_DAY, 0, 0, 0, 0));
             const startTimestampUTC = startDateUTC.getTime();
 
-            // ============================================
-            // REFERENSI DOM & STATE
-            // ============================================
             const elJam = document.getElementById('jam');
             const elMenit = document.getElementById('menit');
             const elHari = document.getElementById('hari');
@@ -356,16 +343,13 @@
             const dropdownOptions = document.getElementById('dropdown-options');
             const selectedText = document.getElementById('selected-text');
 
-            let currentOffset = 0;
+            let currentOffset = 0; // Sekarang default +0 adalah Abkozia / Sarta Daratan
             let prevJamStr = "";
             let prevMenitStr = "";
 
             const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-            // ============================================
-            // FUNGSI ANIMASI TEKS
-            // ============================================
             function animateValue(element, newValue) {
                 if (element.innerText === newValue) return;
 
@@ -384,9 +368,6 @@
                 }, 300); 
             }
 
-            // ============================================
-            // LOGIKA DROPDOWN
-            // ============================================
             dropdownTrigger.addEventListener('click', function(e) {
                 e.stopPropagation();
                 dropdownWrapper.classList.toggle('open');
@@ -419,9 +400,6 @@
                 dropdownWrapper.classList.remove('open');
             });
 
-            // ============================================
-            // UPDATE TAMPILAN UTAMA
-            // ============================================
             function updateClock(forceUpdate = false) {
                 const nowReal = Date.now();
                 let hour = 0, minute = 0;
