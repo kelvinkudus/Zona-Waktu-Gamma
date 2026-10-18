@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zona Waktu Gamma - Atheria Universe</title>
+    <!-- Tambahan Font untuk angka biar lebih tegas -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap');
-
         * {
             margin: 0;
             padding: 0;
@@ -34,7 +34,7 @@
             min-height: 100vh;
         }
 
-        /* --- Bagian Header --- */
+        /* --- Header & Dropdown --- */
         .header {
             display: flex;
             justify-content: space-between;
@@ -59,7 +59,6 @@
             opacity: 0.95;
         }
 
-        /* --- CUSTOM DROPDOWN --- */
         .custom-select-wrapper {
             position: relative;
             user-select: none;
@@ -81,9 +80,7 @@
             backdrop-filter: blur(5px);
         }
 
-        .custom-select-trigger:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
+        .custom-select-trigger:hover { background: rgba(255, 255, 255, 0.25); }
 
         .arrow {
             width: 0;
@@ -94,9 +91,7 @@
             transition: transform 0.3s ease;
         }
 
-        .custom-select-wrapper.open .arrow {
-            transform: rotate(180deg);
-        }
+        .custom-select-wrapper.open .arrow { transform: rotate(180deg); }
 
         .custom-options {
             position: absolute;
@@ -117,7 +112,7 @@
         }
 
         .custom-options::-webkit-scrollbar { width: 6px; }
-        .custom-options::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+        .custom-options::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
 
         .custom-select-wrapper.open .custom-options {
             opacity: 1;
@@ -134,21 +129,11 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .custom-option:last-child {
-            border-bottom: none;
-        }
+        .custom-option:last-child { border-bottom: none; }
+        .custom-option:hover { background: rgba(255, 255, 255, 0.2); }
+        .custom-option.selected { background: #FFE07D; color: #333; font-weight: 700; }
 
-        .custom-option:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .custom-option.selected {
-            background: #FFE07D;
-            color: #333;
-            font-weight: 700;
-        }
-
-        /* --- Bagian Tengah (Jam & Menit) --- */
+        /* --- Bagian Tengah (FLIP CLOCK) --- */
         .time-section {
             flex-grow: 1;
             display: flex;
@@ -164,50 +149,116 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            position: relative;
         }
 
         .label-group {
-            width: 90px;
+            width: 80px;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             text-align: right;
-            padding-right: 20px;
-            z-index: 2;
+            padding-right: 15px;
         }
 
-        .label-id {
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
+        .label-id { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.2; }
+        .label-en { font-size: 1rem; font-weight: 400; letter-spacing: 0.5px; }
+
+        /* --- FLIP CLOCK STYLING --- */
+        .flip-clock-container {
+            display: flex;
+            gap: 10px;
         }
 
-        .label-en {
-            font-size: 1rem;
-            font-weight: 400;
-            letter-spacing: 0.5px;
+        .flip-unit {
+            position: relative;
+            width: 100px;
+            height: 140px;
+            background: transparent;
+            perspective: 1000px; /* Untuk efek 3D */
+            font-family: 'Oswald', sans-serif;
         }
 
-        .number {
-            font-size: 11rem;
-            font-weight: 800;
-            line-height: 0.8;
-            letter-spacing: -2px;
+        .digit-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Bagian Atas dan Bawah */
+        .card-top, .card-bottom, .flip-top, .flip-bottom {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            background-color: #4a81ab; /* Warna dasar biru agak gelap */
             color: #FFFFFF;
-            font-variant-numeric: tabular-nums;
+            font-size: 9rem;
+            font-weight: 700;
+            line-height: 140px; /* Sama dengan tinggi container */
         }
 
-        .number.minute {
+        /* Setengah Atas */
+        .card-top, .flip-top {
+            top: 0;
+            align-items: flex-end;
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+            border-radius: 12px 12px 0 0;
+        }
+
+        /* Setengah Bawah */
+        .card-bottom, .flip-bottom {
+            bottom: 0;
+            align-items: flex-start;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Posisi angka khusus untuk menit (kuning) */
+        .flip-unit.minute .card-top, .flip-unit.minute .card-bottom,
+        .flip-unit.minute .flip-top, .flip-unit.minute .flip-bottom {
+            background-color: #E5B84D; /* Biru gelap untuk background, teks kuning */
             color: #FFE07D;
+        }
+
+        /* Kartu yang berputar (animasi) */
+        .flip-card {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            background-color: #4a81ab;
+            transform-origin: bottom;
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease-in;
+            backface-visibility: hidden;
+        }
+
+        .flip-unit.minute .flip-card { background-color: #E5B84D; }
+
+        .flip-card.flipping {
+            transform: rotateX(-90deg);
+        }
+
+        /* Efek bayangan saat berputar */
+        .flip-unit::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(0,0,0,0.4);
+            z-index: 10;
         }
 
         .divider {
             width: 100%;
             height: 2px;
             background-color: #FFFFFF;
-            margin: 10px 0 20px 0;
+            margin: 20px 0 20px 0;
             opacity: 0.9;
         }
 
@@ -228,17 +279,8 @@
             align-items: center;
         }
 
-        .date-box.hari {
-            flex: 1;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .date-box.tanggal {
-            flex: 2.5;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
+        .date-box.hari { flex: 1; font-size: 1.2rem; font-weight: 700; }
+        .date-box.tanggal { flex: 2.5; font-size: 1.2rem; font-weight: 700; }
 
         .status-indicator {
             text-align: center;
@@ -254,12 +296,14 @@
             .container { padding: 20px; }
             .header-text h1 { font-size: 1.4rem; }
             .header-text h2 { font-size: 0.8rem; }
-            .number { font-size: 8rem; }
-            .label-group { width: 70px; padding-right: 10px; }
+            .label-group { width: 60px; padding-right: 10px; }
             .label-id { font-size: 0.9rem; }
             .label-en { font-size: 0.75rem; }
             .date-box.hari, .date-box.tanggal { font-size: 1rem; padding: 8px; }
-            .custom-select-wrapper { width: 130px; }
+            .custom-select-wrapper { width: 120px; }
+            
+            .flip-unit { width: 70px; height: 100px; }
+            .card-top, .card-bottom, .flip-top, .flip-bottom, .flip-card { font-size: 6rem; line-height: 100px; }
         }
     </style>
 </head>
@@ -280,7 +324,6 @@
                     <div class="arrow"></div>
                 </div>
                 <div class="custom-options" id="dropdown-options">
-                    <!-- Urut dari yang paling lambat ke paling cepat -->
                     <div class="custom-option" data-value="-2">Big Land</div>
                     <div class="custom-option" data-value="-1">Sarta (Ekslave)</div>
                     <div class="custom-option" data-value="-1">Etinal</div>
@@ -297,7 +340,7 @@
             </div>
         </div>
 
-        <!-- Waktu -->
+        <!-- Waktu (Flip Clock) -->
         <div class="time-section">
             <!-- Blok Jam -->
             <div class="time-block">
@@ -305,10 +348,26 @@
                     <span class="label-id">JAM</span>
                     <span class="label-en">HOURS</span>
                 </div>
-                <div class="number" id="jam">00</div>
+                <div class="flip-clock-container" id="jam-container">
+                    <!-- Digit Jam Puluhan -->
+                    <div class="flip-unit" id="jam-1">
+                        <div class="digit-card">
+                            <div class="card-top">0</div>
+                            <div class="card-bottom">0</div>
+                            <div class="flip-card"></div>
+                        </div>
+                    </div>
+                    <!-- Digit Jam Satuan -->
+                    <div class="flip-unit" id="jam-2">
+                        <div class="digit-card">
+                            <div class="card-top">0</div>
+                            <div class="card-bottom">0</div>
+                            <div class="flip-card"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Garis Pemisah -->
             <div class="divider"></div>
 
             <!-- Blok Menit -->
@@ -317,7 +376,24 @@
                     <span class="label-id">MENIT</span>
                     <span class="label-en">MINUTE</span>
                 </div>
-                <div class="number minute" id="menit">00</div>
+                <div class="flip-clock-container" id="menit-container">
+                    <!-- Digit Menit Puluhan -->
+                    <div class="flip-unit minute" id="menit-1">
+                        <div class="digit-card">
+                            <div class="card-top">0</div>
+                            <div class="card-bottom">0</div>
+                            <div class="flip-card"></div>
+                        </div>
+                    </div>
+                    <!-- Digit Menit Satuan -->
+                    <div class="flip-unit minute" id="menit-2">
+                        <div class="digit-card">
+                            <div class="card-top">0</div>
+                            <div class="card-bottom">0</div>
+                            <div class="flip-card"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -336,7 +412,7 @@
             'use strict';
 
             // ============================================
-            // KONFIGURASI WAKTU FIKSI
+            // KONFIGURASI
             // ============================================
             const START_YEAR = 2026;
             const START_MONTH = 11;
@@ -353,8 +429,6 @@
             // ============================================
             // REFERENSI DOM & STATE
             // ============================================
-            const elJam = document.getElementById('jam');
-            const elMenit = document.getElementById('menit');
             const elHari = document.getElementById('hari');
             const elTanggal = document.getElementById('tanggal');
             const elStatus = document.getElementById('status');
@@ -365,14 +439,60 @@
             const dropdownOptions = document.getElementById('dropdown-options');
             const selectedText = document.getElementById('selected-text');
 
-            // Default offset 0 (Tritinia)
             let currentOffset = 0;
 
             const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
             // ============================================
-            // LOGIKA CUSTOM DROPDOWN
+            // LOGIKA FLIP CLOCK
+            // ============================================
+            // Simpan nilai digit saat ini untuk mendeteksi perubahan
+            let currentDigits = { jam1: '0', jam2: '0', menit1: '0', menit2: '0' };
+
+            function setDigit(elementId, newValue) {
+                const unit = document.getElementById(elementId);
+                const topCard = unit.querySelector('.card-top');
+                const bottomCard = unit.querySelector('.card-bottom');
+                const flipCard = unit.querySelector('.flip-card');
+
+                // Jika nilai sama, abaikan
+                if (topCard.innerText === newValue) return;
+
+                const oldValue = topCard.innerText;
+
+                // Set angka baru di bagian belakang (bottom) yang belum kelihatan
+                bottomCard.innerText = newValue;
+
+                // Siapkan kartu animasi (flip) dengan angka lama
+                flipCard.innerHTML = `<div class="flip-top" style="font-size: inherit; line-height: inherit;">${oldValue}</div>`;
+
+                // Mulai animasi jatuh
+                flipCard.classList.add('flipping');
+
+                // Setelah animasi selesai (0.4 detik), update bagian atas dengan angka baru
+                setTimeout(() => {
+                    topCard.innerText = newValue;
+                    flipCard.classList.remove('flipping');
+                    flipCard.innerHTML = ''; // Bersihkan
+                }, 400); // Harus sama dengan durasi transition CSS
+            }
+
+            function updateFlipClock(hour, minute) {
+                const hStr = String(hour).padStart(2, '0');
+                const mStr = String(minute).padStart(2, '0');
+
+                // Jam
+                setDigit('jam-1', hStr[0]);
+                setDigit('jam-2', hStr[1]);
+                
+                // Menit
+                setDigit('menit-1', mStr[0]);
+                setDigit('menit-2', mStr[1]);
+            }
+
+            // ============================================
+            // LOGIKA DROPDOWN
             // ============================================
             dropdownTrigger.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -395,7 +515,7 @@
                     currentOffset = val;
                     
                     dropdownWrapper.classList.remove('open');
-                    updateClock();
+                    updateClock(true); // Paksa update instan
                 });
             });
 
@@ -404,53 +524,64 @@
             });
 
             // ============================================
-            // UPDATE TAMPILAN WAKTU
+            // UPDATE TAMPILAN UTAMA
             // ============================================
-            function updateClock() {
+            function updateClock(forceUpdate = false) {
                 const nowReal = Date.now();
-                
+                let hour = 0, minute = 0;
+
                 if (nowReal < REAL_START_TIMESTAMP) {
                     elStatus.textContent = "MENUNGGU 18 OKT 2026 12:00...";
-                    elJam.textContent = "00";
-                    elMenit.textContent = "00";
+                    elStatus.style.color = "#FFFFFF";
                     
                     const offsetMs = currentOffset * 60 * 60 * 1000;
                     const startDisplay = new Date(startTimestampUTC + offsetMs);
                     
                     elHari.textContent = namaHari[startDisplay.getUTCDay()];
                     elTanggal.textContent = `${startDisplay.getUTCDate()} ${namaBulan[startDisplay.getUTCMonth()]} ${startDisplay.getUTCFullYear()}`;
-                    return;
+                    
+                    hour = startDisplay.getUTCHours();
+                    minute = startDisplay.getUTCMinutes();
+                } else {
+                    elStatus.textContent = "SISTEM BERJALAN (8s = 1m)";
+                    elStatus.style.color = "#a0ffb0";
+
+                    const elapsedRealMs = nowReal - REAL_START_TIMESTAMP;
+                    const fictionalMinutesTotal = elapsedRealMs / REAL_MS_PER_FICTIONAL_MINUTE;
+                    const fictionalMs = fictionalMinutesTotal * 60000;
+                    
+                    const offsetMs = currentOffset * 60 * 60 * 1000;
+                    const fictionalDate = new Date(startTimestampUTC + fictionalMs + offsetMs);
+
+                    hour = fictionalDate.getUTCHours();
+                    minute = fictionalDate.getUTCMinutes();
+                    
+                    elHari.textContent = namaHari[fictionalDate.getUTCDay()];
+                    elTanggal.textContent = `${fictionalDate.getUTCDate()} ${namaBulan[fictionalDate.getUTCMonth()]} ${fictionalDate.getUTCFullYear()}`;
                 }
 
-                elStatus.textContent = "SISTEM BERJALAN (8s = 1m)";
-                elStatus.style.color = "#a0ffb0";
-
-                const elapsedRealMs = nowReal - REAL_START_TIMESTAMP;
-                const fictionalMinutesTotal = elapsedRealMs / REAL_MS_PER_FICTIONAL_MINUTE;
-                const fictionalMs = fictionalMinutesTotal * 60000;
+                // Cek apakah jam/menit berubah dibandingkan render sebelumnya
+                const hStr = String(hour).padStart(2, '0');
+                const mStr = String(minute).padStart(2, '0');
                 
-                const offsetMs = currentOffset * 60 * 60 * 1000;
-                const fictionalDate = new Date(startTimestampUTC + fictionalMs + offsetMs);
-
-                const day = fictionalDate.getUTCDate();
-                const month = fictionalDate.getUTCMonth();
-                const year = fictionalDate.getUTCFullYear();
-                const hour = fictionalDate.getUTCHours();
-                const minute = fictionalDate.getUTCMinutes();
-                const dayOfWeek = fictionalDate.getUTCDay();
-
-                elJam.textContent = String(hour).padStart(2, '0');
-                elMenit.textContent = String(minute).padStart(2, '0');
-                
-                elHari.textContent = namaHari[dayOfWeek];
-                elTanggal.textContent = `${day} ${namaBulan[month]} ${year}`;
+                if (forceUpdate || currentDigits.jam1 !== hStr[0] || currentDigits.jam2 !== hStr[1] || 
+                    currentDigits.menit1 !== mStr[0] || currentDigits.menit2 !== mStr[1]) {
+                    
+                    updateFlipClock(hour, minute);
+                    
+                    currentDigits = {
+                        jam1: hStr[0], jam2: hStr[1],
+                        menit1: mStr[0], menit2: mStr[1]
+                    };
+                }
             }
 
-            updateClock();
-            setInterval(updateClock, 100);
+            // Inisialisasi
+            updateClock(true);
+            setInterval(updateClock, 100); // Cek tiap 100ms
 
             document.addEventListener('visibilitychange', function() {
-                if (!document.hidden) updateClock();
+                if (!document.hidden) updateClock(true);
             });
 
         })();
