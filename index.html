@@ -31,6 +31,7 @@
             flex-direction: column;
             justify-content: space-between;
             min-height: 100vh;
+            position: relative;
         }
 
         /* --- Header & Dropdown --- */
@@ -164,7 +165,6 @@
         .label-id { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.2; }
         .label-en { font-size: 1rem; font-weight: 400; letter-spacing: 0.5px; }
 
-        /* Style untuk Angka */
         .number-container {
             overflow: hidden;
             height: 9rem;
@@ -226,6 +226,191 @@
             z-index: 1;
         }
 
+        /* --- FITUR KALKULATOR --- */
+        .calc-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 55px;
+            height: 55px;
+            background-color: #FFE07D;
+            color: #333;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 999;
+            transition: transform 0.2s;
+        }
+
+        .calc-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .calc-modal {
+            background: #5C9BCB;
+            border: 2px solid #FFFFFF;
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .calc-modal {
+            transform: translateY(0);
+        }
+
+        .calc-modal h3 {
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        .calc-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #FFFFFF;
+        }
+
+        .calc-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: transparent;
+            color: #FFFFFF;
+            transition: background 0.2s;
+        }
+
+        .calc-tab.active {
+            background: #FFFFFF;
+            color: #5C9BCB;
+        }
+
+        .calc-form {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .calc-form.active {
+            display: flex;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .calc-input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calc-input-row input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #FFFFFF;
+            background: rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .calc-input-row input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .calc-input-row select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #FFFFFF;
+            background: #4a81ab;
+            color: #FFFFFF;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .calc-btn-submit {
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: #FFE07D;
+            color: #333;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .calc-btn-submit:hover {
+            background: #ffd54f;
+        }
+
+        .calc-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .calc-result.show {
+            display: block;
+        }
+
+        .calc-result strong {
+            color: #FFE07D;
+            font-size: 1.2rem;
+        }
+
         @media (max-width: 420px) {
             .container { padding: 20px; }
             .header-text h1 { font-size: 1.4rem; }
@@ -237,6 +422,7 @@
             .custom-select-wrapper { width: 130px; }
             .number-container { height: 6rem; }
             .number { font-size: 8rem; }
+            .calc-btn { bottom: 20px; right: 20px; width: 45px; height: 45px; font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -247,7 +433,7 @@
         <div class="header">
             <div class="header-text">
                 <h1>ZONA WAKTU GAMMA</h1>
-                <h2 id="negara-label">ABKOZIA</h2> <!-- Default diubah ke Abkozia (+0) -->
+                <h2 id="negara-label">ABKOZIA</h2>
             </div>
             
             <!-- CUSTOM DROPDOWN -->
@@ -257,25 +443,18 @@
                     <div class="arrow"></div>
                 </div>
                 <div class="custom-options" id="dropdown-options">
-                    <!-- Urut dari paling lambat ke paling cepat -->
                     <div class="custom-option" data-value="-2">Big Land</div>
                     <div class="custom-option" data-value="-1">Sarta (Ekslave)</div>
                     <div class="custom-option" data-value="-1">Etinal</div>
-                    
-                    <!-- Baseline +0 -->
                     <div class="custom-option selected" data-value="0">Abkozia</div>
                     <div class="custom-option" data-value="0">Sarta (Daratan)</div>
-                    
-                    <!-- +1 -->
                     <div class="custom-option" data-value="1">Hensand</div>
                     <div class="custom-option" data-value="1">Mosvoire</div>
                     <div class="custom-option" data-value="1">Casenia</div>
                     <div class="custom-option" data-value="1">Lespyia</div>
-                    
-                    <!-- +2 -->
                     <div class="custom-option" data-value="2">Aljazar</div>
                     <div class="custom-option" data-value="2">Trebisi</div>
-                    <div class="custom-option" data-value="2">Tritinia</div> <!-- Tritinia pindah ke sini -->
+                    <div class="custom-option" data-value="2">Tritinia</div>
                 </div>
             </div>
         </div>
@@ -315,10 +494,63 @@
         </div>
     </div>
 
+    <!-- TOMBOL KALKULATOR -->
+    <div class="calc-btn" id="btn-open-calc">🧮</div>
+
+    <!-- POP-UP KALKULATOR -->
+    <div class="modal-overlay" id="calc-modal">
+        <div class="calc-modal">
+            <h3>KALKULATOR WAKTU</h3>
+            
+            <div class="calc-tabs">
+                <div class="calc-tab active" id="tab-nyata">Nyata ➔ Gamma</div>
+                <div class="calc-tab" id="tab-gamma">Gamma ➔ Nyata</div>
+            </div>
+
+            <!-- Form Nyata ke Gamma -->
+            <div class="calc-form active" id="form-nyata">
+                <div class="input-group">
+                    <label>Waktu di Dunia Nyata</label>
+                    <div class="calc-input-row">
+                        <input type="number" id="input-nyata" placeholder="Masukkan angka..." min="1" oninput="hitungKonversi()">
+                        <select id="satuan-nyata" onchange="hitungKonversi()">
+                            <option value="detik">Detik</option>
+                            <option value="menit" selected>Menit</option>
+                            <option value="jam">Jam</option>
+                            <option value="hari">Hari</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="calc-result" id="result-nyata"></div>
+            </div>
+
+            <!-- Form Gamma ke Nyata -->
+            <div class="calc-form" id="form-gamma">
+                <div class="input-group">
+                    <label>Waktu di Planet Gamma</label>
+                    <div class="calc-input-row">
+                        <input type="number" id="input-gamma" placeholder="Masukkan angka..." min="1" oninput="hitungKonversi()">
+                        <select id="satuan-gamma" onchange="hitungKonversi()">
+                            <option value="menit" selected>Menit</option>
+                            <option value="jam">Jam</option>
+                            <option value="hari">Hari</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="calc-result" id="result-gamma"></div>
+            </div>
+
+            <button class="calc-btn-submit" id="btn-close-calc">TUTUP</button>
+        </div>
+    </div>
+
     <script>
         (function() {
             'use strict';
 
+            // ============================================
+            // LOGIKA JAM UTAMA
+            // ============================================
             const START_YEAR = 2026;
             const START_MONTH = 11;
             const START_DAY = 1;
@@ -343,7 +575,7 @@
             const dropdownOptions = document.getElementById('dropdown-options');
             const selectedText = document.getElementById('selected-text');
 
-            let currentOffset = 0; // Sekarang default +0 adalah Abkozia / Sarta Daratan
+            let currentOffset = 0;
             let prevJamStr = "";
             let prevMenitStr = "";
 
@@ -352,14 +584,11 @@
 
             function animateValue(element, newValue) {
                 if (element.innerText === newValue) return;
-
                 element.classList.add('animate-out');
-
                 setTimeout(() => {
                     element.innerText = newValue;
                     element.classList.remove('animate-out');
                     element.classList.add('animate-in');
-                    
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
                             element.classList.remove('animate-in');
@@ -377,7 +606,6 @@
             options.forEach(option => {
                 option.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    
                     options.forEach(opt => opt.classList.remove('selected'));
                     this.classList.add('selected');
                     
@@ -389,7 +617,6 @@
                     currentOffset = val;
                     
                     dropdownWrapper.classList.remove('open');
-                    
                     prevJamStr = ""; 
                     prevMenitStr = "";
                     updateClock(true);
@@ -457,6 +684,121 @@
             document.addEventListener('visibilitychange', function() {
                 if (!document.hidden) updateClock(true);
             });
+
+
+            // ============================================
+            // LOGIKA KALKULATOR
+            // ============================================
+            const modal = document.getElementById('calc-modal');
+            const btnOpen = document.getElementById('btn-open-calc');
+            const btnClose = document.getElementById('btn-close-calc');
+            
+            const tabNyata = document.getElementById('tab-nyata');
+            const tabGamma = document.getElementById('tab-gamma');
+            const formNyata = document.getElementById('form-nyata');
+            const formGamma = document.getElementById('form-gamma');
+
+            // Buka & Tutup Modal
+            btnOpen.addEventListener('click', () => {
+                modal.classList.add('active');
+                hitungKonversi();
+            });
+            
+            btnClose.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+
+            // Ganti Tab
+            tabNyata.addEventListener('click', () => {
+                tabNyata.classList.add('active');
+                tabGamma.classList.remove('active');
+                formNyata.classList.add('active');
+                formGamma.classList.remove('active');
+                hitungKonversi();
+            });
+
+            tabGamma.addEventListener('click', () => {
+                tabGamma.classList.add('active');
+                tabNyata.classList.remove('active');
+                formGamma.classList.add('active');
+                formNyata.classList.remove('active');
+                hitungKonversi();
+            });
+
+            // Fungsi Format Hasil
+            function formatHasil(totalMinutes) {
+                const days = Math.floor(totalMinutes / 1440);
+                const hours = Math.floor((totalMinutes % 1440) / 60);
+                const minutes = Math.floor(totalMinutes % 60);
+                
+                let hasil = [];
+                if (days > 0) hasil.push(`${days} Hari`);
+                if (hours > 0) hasil.push(`${hours} Jam`);
+                if (minutes > 0) hasil.push(`${minutes} Menit`);
+                
+                if (hasil.length === 0) return "0 Menit";
+                return hasil.join(" ");
+            }
+
+            // Fungsi Hitung
+            window.hitungKonversi = function() {
+                // 1. Nyata ke Gamma
+                const valNyata = parseFloat(document.getElementById('input-nyata').value);
+                const satuanNyata = document.getElementById('satuan-nyata').value;
+                const resNyata = document.getElementById('result-nyata');
+
+                if (!isNaN(valNyata) && valNyata > 0) {
+                    let totalDetikNyata = valNyata;
+                    if (satuanNyata === 'menit') totalDetikNyata *= 60;
+                    if (satuanNyata === 'jam') totalDetikNyata *= 3600;
+                    if (satuanNyata === 'hari') totalDetikNyata *= 86400;
+
+                    // Rumus: 8 detik nyata = 1 menit fiksi
+                    const totalMenitFiksi = totalDetikNyata / 8;
+                    
+                    resNyata.innerHTML = `Di Planet Gamma, waktu berlalu selama:<br><strong>${formatHasil(totalMenitFiksi)}</strong>`;
+                    resNyata.classList.add('show');
+                } else {
+                    resNyata.classList.remove('show');
+                }
+
+                // 2. Gamma ke Nyata
+                const valGamma = parseFloat(document.getElementById('input-gamma').value);
+                const satuanGamma = document.getElementById('satuan-gamma').value;
+                const resGamma = document.getElementById('result-gamma');
+
+                if (!isNaN(valGamma) && valGamma > 0) {
+                    let totalMenitFiksi = valGamma;
+                    if (satuanGamma === 'jam') totalMenitFiksi *= 60;
+                    if (satuanGamma === 'hari') totalMenitFiksi *= 1440;
+
+                    // Rumus: 1 menit fiksi = 8 detik nyata
+                    const totalDetikNyata = totalMenitFiksi * 8;
+                    
+                    // Format ke hari, jam, menit, detik untuk tampilan nyata
+                    const days = Math.floor(totalDetikNyata / 86400);
+                    const hours = Math.floor((totalDetikNyata % 86400) / 3600);
+                    const minutes = Math.floor((totalDetikNyata % 3600) / 60);
+                    const seconds = Math.floor(totalDetikNyata % 60);
+
+                    let hasil = [];
+                    if (days > 0) hasil.push(`${days} Hari`);
+                    if (hours > 0) hasil.push(`${hours} Jam`);
+                    if (minutes > 0) hasil.push(`${minutes} Menit`);
+                    if (seconds > 0) hasil.push(`${seconds} Detik`);
+
+                    if (hasil.length === 0) hasil.push("0 Detik");
+
+                    resGamma.innerHTML = `Di Dunia Nyata, kamu hanya perlu menunggu:<br><strong>${hasil.join(" ")}</strong>`;
+                    resGamma.classList.add('show');
+                } else {
+                    resGamma.classList.remove('show');
+                }
+            }
 
         })();
     </script>
