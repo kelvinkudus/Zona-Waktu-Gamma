@@ -41,7 +41,7 @@
             align-items: flex-start;
             margin-top: 10px;
             position: relative;
-            z-index: 100; /* Pastikan dropdown di atas elemen lain */
+            z-index: 100;
         }
 
         .header-text h1 {
@@ -63,7 +63,7 @@
         .custom-select-wrapper {
             position: relative;
             user-select: none;
-            width: 140px;
+            width: 150px;
         }
 
         .custom-select-trigger {
@@ -85,7 +85,6 @@
             background: rgba(255, 255, 255, 0.25);
         }
 
-        /* Ikon panah */
         .arrow {
             width: 0;
             height: 0;
@@ -99,13 +98,12 @@
             transform: rotate(180deg);
         }
 
-        /* Menu Options */
         .custom-options {
             position: absolute;
             top: 110%;
             right: 0;
             width: 180px;
-            background: rgba(65, 115, 155, 0.95); /* Warna biru gelap transparan */
+            background: rgba(65, 115, 155, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
@@ -118,7 +116,6 @@
             overflow-y: auto;
         }
 
-        /* Scrollbar kustom untuk dropdown */
         .custom-options::-webkit-scrollbar { width: 6px; }
         .custom-options::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
 
@@ -146,7 +143,7 @@
         }
 
         .custom-option.selected {
-            background: #FFE07D; /* Warna kuning penanda terpilih */
+            background: #FFE07D;
             color: #333;
             font-weight: 700;
         }
@@ -262,7 +259,7 @@
             .label-id { font-size: 0.9rem; }
             .label-en { font-size: 0.75rem; }
             .date-box.hari, .date-box.tanggal { font-size: 1rem; padding: 8px; }
-            .custom-select-wrapper { width: 120px; }
+            .custom-select-wrapper { width: 130px; }
         }
     </style>
 </head>
@@ -273,28 +270,29 @@
         <div class="header">
             <div class="header-text">
                 <h1>ZONA WAKTU GAMMA</h1>
-                <h2 id="negara-label">CASENIA</h2>
+                <h2 id="negara-label">TRITINIA</h2>
             </div>
             
             <!-- CUSTOM DROPDOWN -->
             <div class="custom-select-wrapper" id="dropdown-wrapper">
                 <div class="custom-select-trigger" id="dropdown-trigger">
-                    <span id="selected-text">Casenia</span>
+                    <span id="selected-text">Tritinia</span>
                     <div class="arrow"></div>
                 </div>
                 <div class="custom-options" id="dropdown-options">
-                    <div class="custom-option" data-value="2">Hensand</div>
-                    <div class="custom-option" data-value="1">Aljazar</div>
+                    <!-- Urut dari yang paling lambat ke paling cepat -->
+                    <div class="custom-option" data-value="-2">Big Land</div>
+                    <div class="custom-option" data-value="-1">Sarta (Ekslave)</div>
+                    <div class="custom-option" data-value="-1">Etinal</div>
+                    <div class="custom-option selected" data-value="0">Tritinia</div>
+                    <div class="custom-option" data-value="0">Abkozia</div>
+                    <div class="custom-option" data-value="0">Sarta (Daratan)</div>
+                    <div class="custom-option" data-value="1">Hensand</div>
+                    <div class="custom-option" data-value="1">Mosvoire</div>
+                    <div class="custom-option" data-value="1">Casenia</div>
                     <div class="custom-option" data-value="1">Lespyia</div>
-                    <div class="custom-option" data-value="1">Abkozia</div>
-                    <div class="custom-option" data-value="1">Sarta (Daratan)</div>
-                    <div class="custom-option" data-value="-1">Sarta (Semenanjung)</div>
-                    <div class="custom-option" data-value="-2">Etinal</div>
+                    <div class="custom-option" data-value="2">Aljazar</div>
                     <div class="custom-option" data-value="2">Trebisi</div>
-                    <div class="custom-option" data-value="1">Tritinia</div>
-                    <div class="custom-option selected" data-value="0">Casenia</div>
-                    <div class="custom-option" data-value="-3">Big Land</div>
-                    <div class="custom-option" data-value="0">Mosvoire</div>
                 </div>
             </div>
         </div>
@@ -362,12 +360,12 @@
             const elStatus = document.getElementById('status');
             const elNegaraLabel = document.getElementById('negara-label');
 
-            // Custom Dropdown Elements
             const dropdownWrapper = document.getElementById('dropdown-wrapper');
             const dropdownTrigger = document.getElementById('dropdown-trigger');
             const dropdownOptions = document.getElementById('dropdown-options');
             const selectedText = document.getElementById('selected-text');
 
+            // Default offset 0 (Tritinia)
             let currentOffset = 0;
 
             const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -376,25 +374,19 @@
             // ============================================
             // LOGIKA CUSTOM DROPDOWN
             // ============================================
-            // Buka/tutup menu
             dropdownTrigger.addEventListener('click', function(e) {
                 e.stopPropagation();
                 dropdownWrapper.classList.toggle('open');
             });
 
-            // Pilih opsi
             const options = dropdownOptions.querySelectorAll('.custom-option');
             options.forEach(option => {
                 option.addEventListener('click', function(e) {
                     e.stopPropagation();
                     
-                    // Hapus class selected dari semua
                     options.forEach(opt => opt.classList.remove('selected'));
-                    
-                    // Tambah class selected ke yang diklik
                     this.classList.add('selected');
                     
-                    // Update nilai teks dan offset
                     const text = this.innerText;
                     const val = parseInt(this.getAttribute('data-value'));
                     
@@ -402,19 +394,14 @@
                     elNegaraLabel.innerText = text.toUpperCase();
                     currentOffset = val;
                     
-                    // Tutup menu
                     dropdownWrapper.classList.remove('open');
-                    
-                    // Paksa jam update seketika
                     updateClock();
                 });
             });
 
-            // Tutup dropdown jika klik di luar area
             document.addEventListener('click', function() {
                 dropdownWrapper.classList.remove('open');
             });
-
 
             // ============================================
             // UPDATE TAMPILAN WAKTU
@@ -422,7 +409,6 @@
             function updateClock() {
                 const nowReal = Date.now();
                 
-                // Jika belum mencapai waktu mulai (18 Okt 2026 12:00)
                 if (nowReal < REAL_START_TIMESTAMP) {
                     elStatus.textContent = "MENUNGGU 18 OKT 2026 12:00...";
                     elJam.textContent = "00";
@@ -436,7 +422,6 @@
                     return;
                 }
 
-                // Jika sudah berjalan
                 elStatus.textContent = "SISTEM BERJALAN (8s = 1m)";
                 elStatus.style.color = "#a0ffb0";
 
