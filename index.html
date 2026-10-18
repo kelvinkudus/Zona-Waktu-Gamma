@@ -76,6 +76,7 @@
             background-position: right 10px top 50%;
             background-size: 10px auto;
             padding-right: 30px;
+            max-width: 150px;
         }
 
         .country-selector option {
@@ -184,7 +185,7 @@
             .container { padding: 20px; }
             .header-text h1 { font-size: 1.4rem; }
             .header-text h2 { font-size: 0.8rem; }
-            .country-selector { font-size: 0.7rem; padding: 6px 8px; }
+            .country-selector { font-size: 0.7rem; padding: 6px 8px; max-width: 120px; }
             .number { font-size: 8rem; }
             .label-group { width: 70px; padding-right: 10px; }
             .label-id { font-size: 0.9rem; }
@@ -200,20 +201,22 @@
         <div class="header">
             <div class="header-text">
                 <h1>ZONA WAKTU GAMMA</h1>
-                <h2 id="negara-label">FGN STANDARD (HENSAND)</h2>
+                <h2 id="negara-label">CASENIA</h2>
             </div>
             <!-- Dropdown Pilihan Negara -->
             <select class="country-selector" id="pilih-negara">
-                <option value="0">Hensand (Amerdom)</option>
+                <option value="2">Hensand</option>
                 <option value="1">Aljazar</option>
-                <option value="-1">Lespyia</option>
-                <option value="1">Casenia</option>
-                <option value="-1">Sarta</option>
-                <option value="2">Trebisi</option>
+                <option value="1">Lespyia</option>
+                <option value="1">Abkozia</option>
+                <option value="1">Sarta (Daratan)</option>
+                <option value="-1">Sarta (Semenanjung)</option>
                 <option value="-2">Etinal</option>
-                <option value="2">Mosvoire</option>
-                <option value="3">Tritinia</option>
-                <option value="-1">Abkozia</option>
+                <option value="2">Trebisi</option>
+                <option value="1">Tritinia</option>
+                <option value="0" selected>Casenia</option>
+                <option value="-3">Big Land</option>
+                <option value="0">Mosvoire</option>
             </select>
         </div>
 
@@ -262,14 +265,14 @@
             const START_MONTH = 11;
             const START_DAY = 1;
             
-            // Waktu fiksi mulai berdetak (Real World): 18 Oktober 2026, 12:00
+            // Waktu mulai berdetak (Real World): 18 Oktober 2026, 12:00
             const REAL_START_DATE = new Date(2026, 9, 18, 12, 0, 0); 
             const REAL_START_TIMESTAMP = REAL_START_DATE.getTime();
 
             // Kecepatan: 8 detik nyata = 1 menit fiksi
             const REAL_MS_PER_FICTIONAL_MINUTE = 8000; 
 
-            // Waktu Dasar (FGN/Hensand) dalam epoch UTC
+            // Waktu Dasar patokan (Casenia/Mosvoire = offset 0) dalam epoch UTC
             const startDateUTC = new Date(Date.UTC(START_YEAR, START_MONTH - 1, START_DAY, 0, 0, 0, 0));
             const startTimestampUTC = startDateUTC.getTime();
 
@@ -284,32 +287,18 @@
             const elPilihNegara = document.getElementById('pilih-negara');
             const elNegaraLabel = document.getElementById('negara-label');
 
-            // Offset waktu (dalam jam) per negara relatif terhadap Hensand (FGN)
-            const offsetNegara = {
-                "Hensand (Amerdom)": 0,
-                "Aljazar": 1,        // Asumsi +1 jam
-                "Lespyia": -1,       // Asumsi -1 jam
-                "Casenia": 1,
-                "Sarta": -1,
-                "Trebisi": 2,
-                "Etinal": -2,
-                "Mosvoire": 2,
-                "Tritinia": 3,
-                "Abkozia": -1
-            };
-
             let currentOffset = 0;
 
             // Array nama hari dan bulan
             const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-            // Event Listener untuk ganti negara
+            // Event Listener saat negara diganti
             elPilihNegara.addEventListener('change', function() {
                 const negaraTerpilih = this.options[this.selectedIndex].text;
                 currentOffset = parseInt(this.value);
                 elNegaraLabel.textContent = negaraTerpilih.toUpperCase();
-                updateClock(); // Update langsung saat diganti
+                updateClock(); // Paksa update seketika
             });
 
             // ============================================
@@ -318,27 +307,35 @@
             function updateClock() {
                 const nowReal = Date.now();
                 
+                // Jika belum mencapai waktu mulai (18 Okt 2026 12:00)
                 if (nowReal < REAL_START_TIMESTAMP) {
                     elStatus.textContent = "MENUNGGU 18 OKT 2026 12:00...";
                     elJam.textContent = "00";
                     elMenit.textContent = "00";
-                    const startDayOfWeek = startDateUTC.getUTCDay();
-                    elHari.textContent = namaHari[startDayOfWeek];
-                    elTanggal.textContent = `${START_DAY} ${namaBulan[START_MONTH - 1]} ${START_YEAR}`;
+                    
+                    // Kalkulasi tanggal awal fiksi dengan offset yang dipilih
+                    const offsetMs = currentOffset * 60 * 60 * 1000;
+                    const startDisplay = new Date(startTimestampUTC + offsetMs);
+                    
+                    elHari.textContent = namaHari[startDisplay.getUTCDay()];
+                    elTanggal.textContent = `${startDisplay.getUTCDate()} ${namaBulan[startDisplay.getUTCMonth()]} ${startDisplay.getUTCFullYear()}`;
                     return;
                 }
 
+                // Jika sudah berjalan
                 elStatus.textContent = "SISTEM BERJALAN (8s = 1m)";
                 elStatus.style.color = "#a0ffb0";
 
+                // Hitung waktu fiksi berjalan
                 const elapsedRealMs = nowReal - REAL_START_TIMESTAMP;
                 const fictionalMinutesTotal = elapsedRealMs / REAL_MS_PER_FICTIONAL_MINUTE;
                 const fictionalMs = fictionalMinutesTotal * 60000;
                 
-                // Tambahkan offset negara (dalam milidetik) ke waktu fiksi
+                // Terapkan Offset Waktu Negara
                 const offsetMs = currentOffset * 60 * 60 * 1000;
                 const fictionalDate = new Date(startTimestampUTC + fictionalMs + offsetMs);
 
+                // Ekstrak data
                 const day = fictionalDate.getUTCDate();
                 const month = fictionalDate.getUTCMonth();
                 const year = fictionalDate.getUTCFullYear();
@@ -346,6 +343,7 @@
                 const minute = fictionalDate.getUTCMinutes();
                 const dayOfWeek = fictionalDate.getUTCDay();
 
+                // Tampilkan ke layar
                 elJam.textContent = String(hour).padStart(2, '0');
                 elMenit.textContent = String(minute).padStart(2, '0');
                 
@@ -353,6 +351,7 @@
                 elTanggal.textContent = `${day} ${namaBulan[month]} ${year}`;
             }
 
+            // Inisialisasi awal
             updateClock();
             setInterval(updateClock, 100);
 
