@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zona Waktu Gamma - Atheria Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -173,9 +173,9 @@
         }
 
         .number {
-            font-family: 'Oswald', sans-serif;
+            font-family: 'Montserrat', sans-serif; /* Font dikembalikan ke aslinya */
             font-size: 11rem;
-            font-weight: 700;
+            font-weight: 800; /* Ketebalan sesuai desain awal */
             line-height: 0.9;
             letter-spacing: -2px;
             color: #FFFFFF;
@@ -367,21 +367,15 @@
             // FUNGSI ANIMASI TEKS
             // ============================================
             function animateValue(element, newValue) {
-                // Jika nilainya sama, abaikan
                 if (element.innerText === newValue) return;
 
-                // 1. Animasi keluar (Fade & geser ke atas)
                 element.classList.add('animate-out');
 
-                // 2. Tunggu 300ms (setengah durasi transisi), lalu ganti teks
                 setTimeout(() => {
                     element.innerText = newValue;
                     element.classList.remove('animate-out');
-                    
-                    // 3. Siapkan posisi awal untuk animasi masuk (dari bawah)
                     element.classList.add('animate-in');
                     
-                    // 4. Sedikit delay agar browser sempat render posisi awal, lalu animasikan masuk
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
                             element.classList.remove('animate-in');
@@ -415,7 +409,6 @@
                     
                     dropdownWrapper.classList.remove('open');
                     
-                    // Reset prev string agar animasi terpicu saat ganti negara
                     prevJamStr = ""; 
                     prevMenitStr = "";
                     updateClock(true);
@@ -466,20 +459,17 @@
                 const hStr = String(hour).padStart(2, '0');
                 const mStr = String(minute).padStart(2, '0');
                 
-                // Cek jika jam berubah
                 if (forceUpdate || prevJamStr !== hStr) {
                     animateValue(elJam, hStr);
                     prevJamStr = hStr;
                 }
                 
-                // Cek jika menit berubah
                 if (forceUpdate || prevMenitStr !== mStr) {
                     animateValue(elMenit, mStr);
                     prevMenitStr = mStr;
                 }
             }
 
-            // Inisialisasi awal tanpa animasi (langsung tampil)
             elJam.innerText = "00";
             elMenit.innerText = "00";
 
