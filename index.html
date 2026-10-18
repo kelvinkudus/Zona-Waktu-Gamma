@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waktu Dunia — Fiksi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 20% 30%, #0a0f1e, #03050b);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #e8edff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Efek bintang / partikel halus */
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(1px 1px at 10% 20%, #ffffff88, transparent),
+                radial-gradient(1.5px 1.5px at 80% 70%, #aaccff99, transparent),
+                radial-gradient(1px 1px at 40% 80%, #ffffff66, transparent),
+                radial-gradient(2px 2px at 70% 15%, #bbddff77, transparent),
+                radial-gradient(1px 1px at 90% 40%, #ffffff55, transparent),
+                radial-gradient(1.5px 1.5px at 25% 60%, #99bbff88, transparent),
+                radial-gradient(1px 1px at 55% 10%, #ffffff77, transparent),
+                radial-gradient(2px 2px at 15% 90%, #aaddff66, transparent);
+            background-size: 300px 300px;
+            background-repeat: repeat;
+            opacity: 0.6;
+            animation: drift 120s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes drift {
+            from { background-position: 0 0; }
+            to { background-position: 300px 300px; }
+        }
+
+        .clock-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(8, 14, 28, 0.65);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(120, 170, 255, 0.18);
+            border-radius: 36px;
+            padding: 3rem 4rem;
+            text-align: center;
+            box-shadow: 
+                0 30px 60px -15px rgba(0, 0, 0, 0.8),
+                0 0 80px -20px #3a6eff44,
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: box-shadow 0.3s ease;
+            max-width: 90vw;
+        }
+
+        .clock-card:hover {
+            box-shadow: 
+                0 30px 70px -10px rgba(0, 0, 0, 0.9),
+                0 0 100px -15px #5a8eff55,
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .label-waktu {
+            font-size: 0.8rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: #7a9cd4;
+            margin-bottom: 1.2rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        /* Bagian atas: DD/M/YYYY */
+        .tanggal {
+            font-size: clamp(2.4rem, 8vw, 4.2rem);
+            font-weight: 300;
+            letter-spacing: 0.06em;
+            color: #eef3ff;
+            text-shadow: 0 0 30px #3a6eff44, 0 0 60px #3a6eff22;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 1rem;
+            word-spacing: 0.1em;
+        }
+
+        /* Garis pemisah */
+        .divider {
+            width: 80%;
+            height: 1px;
+            margin: 0.6rem auto 1.6rem;
+            background: linear-gradient(90deg, transparent, #4a7eff66, #8ab0ffaa, #4a7eff66, transparent);
+            border: none;
+        }
+
+        /* Bagian bawah: Jam, Menit */
+        .jam-menit {
+            font-size: clamp(4.5rem, 15vw, 7.5rem);
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            color: #ffffff;
+            text-shadow: 
+                0 0 40px #5a8eff66,
+                0 0 90px #3a6eff44,
+                0 0 140px #2a5eff22;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.02em;
+        }
+
+        .colon {
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+            opacity: 0.8;
+            margin: 0 0.04em;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.25; }
+            50% { opacity: 0.95; }
+        }
+
+        /* Status kecepatan waktu */
+        .status {
+            margin-top: 2.2rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            color: #6b8ac0;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .dot-live {
+            width: 7px;
+            height: 7px;
+            background: #4aff9e;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 12px #4aff9e;
+            animation: blink 1.8s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(0.85); }
+        }
+
+        /* Responsif */
+        @media (max-width: 600px) {
+            .clock-card {
+                padding: 2.2rem 1.8rem;
+                border-radius: 28px;
+            }
+            .tanggal {
+                font-size: 2rem;
+            }
+            .jam-menit {
+                font-size: 4rem;
+            }
+            .label-waktu {
+                font-size: 0.65rem;
+            }
+            .status {
+                font-size: 0.6rem;
+                letter-spacing: 0.12em;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .jam-menit {
+                font-size: 3.2rem;
+            }
+            .tanggal {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-card">
+        <div class="label-waktu">Waktu Dunia</div>
+        
+        <!-- DD/M/YYYY -->
+        <div class="tanggal" id="tanggal">01/11/2026</div>
+        
+        <hr class="divider">
+        
+        <!-- Jam : Menit -->
+        <div class="jam-menit">
+            <span id="jam">00</span>
+            <span class="colon">:</span>
+            <span id="menit">00</span>
+        </div>
+        
+        <div class="status">
+            <span class="dot-live"></span>
+            <span>8 detik nyata = +1 menit fiksi</span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================
+            // KONFIGURASI WAKTU FIKSI
+            // ============================================
+            // Mulai: 1 November 2026, jam 00:00
+            const START_YEAR = 2026;
+            const START_MONTH = 11;   // November (1-based)
+            const START_DAY = 1;
+            const START_HOUR = 0;
+            const START_MINUTE = 0;
+
+            // Kecepatan: 8 detik dunia nyata = +1 menit fiksi
+            // Artinya 1 detik nyata = 1/8 menit fiksi = 7.5 detik fiksi
+            const REAL_MS_PER_FICTIONAL_MINUTE = 8000; // 8 detik = 8000 ms
+
+            // Waktu mulai dalam milidetik (epoch)
+            // Gunakan Date.UTC agar konsisten, lalu tampilkan sebagai tanggal kalender murni
+            const startDate = new Date(Date.UTC(START_YEAR, START_MONTH - 1, START_DAY, START_HOUR, START_MINUTE, 0, 0));
+            const startTimestamp = startDate.getTime();
+
+            // ============================================
+            // REFERENSI DOM
+            // ============================================
+            const elTanggal = document.getElementById('tanggal');
+            const elJam = document.getElementById('jam');
+            const elMenit = document.getElementById('menit');
+
+            // ============================================
+            // FUNGSI FORMAT
+            // ============================================
+            // Format DD/M/YYYY (tanpa leading zero di bulan, tapi hari pakai 2 digit)
+            function formatTanggal(day, month, year) {
+                const dd = String(day).padStart(2, '0');
+                const m = String(month); // tanpa leading zero
+                const yyyy = String(year);
+                return `${dd}/${m}/${yyyy}`;
+            }
+
+            // ============================================
+            // UPDATE TAMPILAN
+            // ============================================
+            function updateClock() {
+                // Waktu nyata sekarang (ms)
+                const nowReal = Date.now();
+
+                // Selisih waktu nyata sejak mulai (ms)
+                const elapsedRealMs = nowReal - startTimestamp;
+
+                // Konversi ke menit fiksi:
+                // setiap 8000 ms nyata = 1 menit fiksi
+                const fictionalMinutesTotal = elapsedRealMs / REAL_MS_PER_FICTIONAL_MINUTE;
+
+                // Hitung tanggal & jam fiksi dari start + menit fiksi
+                // Kita gunakan objek Date dengan basis startDate, lalu tambahkan menit fiksi
+                // Konversi menit fiksi ke milidetik fiksi (1 menit fiksi = 60000 ms fiksi)
+                // Tapi karena kita hanya butuh tampilan, kita bisa hitung manual:
+                // total menit fiksi sejak awal, lalu pecah ke hari, jam, menit.
+
+                // Gunakan startDate sebagai basis, tambahkan fictionalMinutesTotal menit
+                // Untuk menghindari floating point error besar, kita hitung dari komponen.
+                // Namun cara paling aman: buat Date baru dari startTimestamp + (fictionalMinutesTotal * 60000)
+                // Lalu baca komponen UTC-nya. Ini bekerja karena kita hanya peduli pada
+                // penambahan waktu kalender yang konsisten (tanpa DST / timezone).
+                const fictionalMs = fictionalMinutesTotal * 60000;
+                const fictionalDate = new Date(startTimestamp + fictionalMs);
+
+                // Ambil komponen UTC (karena startDate dibuat dengan Date.UTC)
+                const day = fictionalDate.getUTCDate();
+                const month = fictionalDate.getUTCMonth() + 1; // 0-based -> 1-based
+                const year = fictionalDate.getUTCFullYear();
+                const hour = fictionalDate.getUTCHours();
+                const minute = fictionalDate.getUTCMinutes();
+
+                // Update DOM
+                elTanggal.textContent = formatTanggal(day, month, year);
+                elJam.textContent = String(hour).padStart(2, '0');
+                elMenit.textContent = String(minute).padStart(2, '0');
+            }
+
+            // ============================================
+            // INISIALISASI & LOOP
+            // ============================================
+            // Tampilkan segera
+            updateClock();
+
+            // Update sesering mungkin agar akurat, tapi cukup 100ms untuk performa
+            // Karena kecepatan 1 menit fiksi per 8 detik nyata, update tiap 100ms
+            // sudah sangat halus (perubahan menit fiksi setiap 8 detik).
+            setInterval(updateClock, 100);
+
+            // Opsional: gunakan requestAnimationFrame untuk smoothness ekstra
+            // Namun setInterval 100ms sudah cukup dan lebih hemat resource.
+            // Kita tetap pakai setInterval.
+
+            // Handle visibility change untuk tetap akurat saat tab kembali aktif
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    updateClock();
+                }
+            });
+
+        })();
+    </script>
+</body>
+</html>
